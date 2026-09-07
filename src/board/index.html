@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DZO — wait for zero</title>
+  <style>
+    :root {
+      --bg: #0A0A0A; --surface: #141210; --border: #2A2724;
+      --accent: #00FF88; --warn: #FFB347; --mute: #4A4A4A;
+      --text: #F5F1E8; --text-muted: #8B8680; --red: #FF5555;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 Inter, system-ui, sans-serif; }
+    .wordmark { font: 700 24px 'Berkeley Mono', 'JetBrains Mono', monospace; color: var(--accent); letter-spacing: 0.05em; }
+    .header { display: flex; align-items: baseline; gap: 24px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .header .sub { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    main { display: grid; grid-template-columns: 260px 1fr; gap: 20px; padding: 20px; }
+    .controls { position: sticky; top: 20px; align-self: start; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .controls h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+    .controls button { display: block; width: 100%; margin-bottom: 6px; padding: 8px 10px; border: 1px solid var(--border); background: transparent; color: var(--text); font-family: 'JetBrains Mono', monospace; cursor: pointer; border-radius: 4px; }
+    .controls button:hover { border-color: var(--accent); color: var(--accent); }
+    .controls .stepper { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .controls .stepper input { width: 60px; padding: 2px 4px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; }
+    .feed { display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; animation: fadeIn 200ms ease-out; cursor: pointer; }
+    .card.FIRE { border-left: 3px solid var(--accent); }
+    .card.WATCH { border-left: 3px solid var(--warn); }
+    .card.SKIP { border-left: 3px solid var(--mute); }
+    .card-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+    .card-head .symbol { font: 700 16px 'JetBrains Mono', monospace; }
+    .card-head .contract { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .badge { padding: 2px 8px; border-radius: 3px; font: 700 12px 'JetBrains Mono', monospace; }
+    .badge.FIRE { background: var(--accent); color: var(--bg); }
+    .badge.WATCH { background: var(--warn); color: var(--bg); }
+    .badge.SKIP { background: var(--mute); color: var(--text); }
+    .row { display: flex; gap: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); }
+    .row .k { color: var(--text-muted); }
+    .row .v { color: var(--text); }
+    .drawer { position: fixed; right: 0; top: 0; bottom: 0; width: 720px; max-width: 100%; background: var(--surface); border-left: 1px solid var(--border); padding: 24px; overflow-y: auto; transform: translateX(100%); transition: transform 200ms; z-index: 10; }
+    .drawer.open { transform: translateX(0); }
+    .drawer h2 { margin: 0 0 12px; font: 700 20px 'JetBrains Mono', monospace; color: var(--accent); }
+    .drawer .line { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 4px 0; border-bottom: 1px dotted var(--border); }
+    .drawer .line .p { font-weight: 700; }
+    .drawer .line .p.pos { color: var(--accent); }
+    .drawer .line .p.neg { color: var(--red); }
+    .drawer .close { position: absolute; top: 12px; right: 12px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 8px; cursor: pointer; }
+    .drawer .close:hover { color: var(--accent); }
+    .ticker { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 6px 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); display: flex; gap: 24px; }
+    .ticker .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; opacity: 0; transition: opacity 200ms; }
+    .ticker .pulse.on { opacity: 1; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wordmark">DZO</div>
+    <div class="sub">Decay · Zero · Open — wait for zero</div>
+    <div class="sub" id="status">connecting…</div>
+  </header>
+  <main>
+    <aside class="controls">
+      <h3>engine</h3>
+      <button id="pause">pause</button>
+      <button id="resume">resume</button>
+      <h3 style="margin-top: 16px;">filters</h3>
+      <button id="fire-filter">fire-only: off</button>
+      <input id="search" placeholder="search / symbol / deployer" style="width: 100%; padding: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'JetBrains Mono', monospace; margin-top: 6px;" />
+      <h3 style="margin-top: 16px;">rules</h3>
+      <div class="stepper">min score <input id="r-minScore" type="number" value="60" min="0" max="100" /></div>
+      <div class="stepper">max open <input id="r-maxOpen" type="number" value="3" min="1" max="10" /></div>
+      <div class="stepper">max tax bps <input id="r-maxTaxBps" type="number" value="300" min="0" max="9900" /></div>
+    </aside>
+    <section class="feed" id="feed"></section>
+  </main>
+  <div class="drawer" id="drawer">
+    <button class="close" onclick="document.getElementById('drawer').classList.remove('open')">esc</button>
+    <div id="drawer-body"></div>
+  </div>
+  <div class="ticker">
+    <span><span class="pulse" id="pulse"></span>pulse</span>
+    <span id="t-launches">launches/60s: —</span>
+    <span id="t-fires">fires/60s: —</span>
+    <span id="t-tax">avg tax: —</span>
+  </div>
+  <script>
+    const feed = document.getElementById('feed');
+    const drawer = document.getElementById('drawer');
+    const drawerBody = document.getElementById('drawer-body');
+    let fireOnly = false;
+    let searchStr = '';
+    let stats = { launches: 0, fires: 0, taxes: [] };
+    const es = new EventSource('/events');
+    es.onopen = () => document.getElementById('status').textContent = 'live';
+    es.onerror = () => document.getElementById('status').textContent = 'disconnected';
+    es.addEventListener('launch', (e) => {
+      const p = JSON.parse(e.data);
+      stats.launches++;
+      const v = p.verdict.verdict;
+      if (fireOnly && v !== 'FIRE') return;
+      if (searchStr && !JSON.stringify(p.enriched).toLowerCase().includes(searchStr)) return;
+      const card = document.createElement('div');
+      card.className = 'card ' + v;
+      card.innerHTML = `
+        <div class="card-head">
+          <div>
+            <span class="symbol">${escape(p.enriched.symbol || '???')}</span>
+            <span class="contract"> · ${escape(short(p.enriched.event.token))}</span>
+          </div>
+          <span class="badge ${v}">${v} ${p.verdict.score}</span>
+        </div>
+        <div class="row">
+          <span><span class="k">dev</span> <span class="v">${(p.enriched.devBuyShare*100).toFixed(1)}%</span></span>
+          <span><span class="k">tax</span> <span class="v">${(p.enriched.creatorTaxBps/100).toFixed(2)}%</span></span>
+          <span><span class="k">exempt</span> <span class="v">${p.enriched.exemptWallets.length}</span></span>
+        </div>`;
+      card.onclick = () => openDrawer(p);
+      feed.prepend(card);
+      while (feed.children.length > 80) feed.lastChild.remove();
+    });
+    es.addEventListener('fire', (e) => { stats.fires++; const p = JSON.parse(e.data); if (p.tax) stats.taxes.push(p.tax); if (stats.taxes.length > 20) stats.taxes.shift(); });
+    es.addEventListener('pulse', () => {
+      const pulse = document.getElementById('pulse'); pulse.classList.add('on'); setTimeout(() => pulse.classList.remove('on'), 300);
+      document.getElementById('t-launches').textContent = 'launches/60s: ' + stats.launches;
+      document.getElementById('t-fires').textContent = 'fires/60s: ' + stats.fires;
+      const avg = stats.taxes.length ? Math.round(stats.taxes.reduce((a,b)=>a+b,0) / stats.taxes.length) : 0;
+      document.getElementById('t-tax').textContent = 'avg tax: ' + (avg/100).toFixed(2) + '%';
+      stats.launches = 0; stats.fires = 0;
+    });
+    function openDrawer(p) {
+      const lines = p.verdict.lines.map(l => `<div class="line"><span>${escape(l.reason)}</span><span class="p ${l.points>=0?'pos':'neg'}">${l.points>=0?'+':''}${l.points}</span></div>`).join('');
+      drawerBody.innerHTML = `<h2>${escape(p.enriched.symbol)}</h2>
+        <div class="line"><span>token</span><span>${escape(p.enriched.event.token)}</span></div>
+        <div class="line"><span>deployer</span><span>${escape(p.enriched.event.deployer)}</span></div>
+        <div class="line"><span>description</span><span>${escape(p.enriched.description || '—')}</span></div>
+        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0;" />
+        ${lines}
+        ${p.verdict.refusedBy ? `<div class="line"><span style="color:var(--red)">refused</span><span>${escape(p.verdict.refusedBy)}</span></div>` : ''}
+        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0;" />
+        <div>
+          <a href="https://pons.family/${p.enriched.event.token}" target="_blank" style="color:var(--accent)">pons</a> ·
+          <a href="https://axiom.trade/${p.enriched.event.token}" target="_blank" style="color:var(--accent)">axiom</a> ·
+          <a href="https://fomo.gg/${p.enriched.event.token}" target="_blank" style="color:var(--accent)">fomo</a> ·
+          <a href="https://explorer.robinhood.com/chain/token/${p.enriched.event.token}" target="_blank" style="color:var(--accent)">explorer</a>
+        </div>`;
+      drawer.classList.add('open');
+    }
+    document.getElementById('pause').onclick = () => post('/api/engine/pause');
+    document.getElementById('resume').onclick = () => post('/api/engine/resume');
+    document.getElementById('fire-filter').onclick = (e) => { fireOnly = !fireOnly; e.target.textContent = 'fire-only: ' + (fireOnly ? 'on' : 'off'); };
+    document.getElementById('search').oninput = (e) => { searchStr = e.target.value.toLowerCase(); };
+    for (const key of ['minScore','maxOpen','maxTaxBps']) {
+      document.getElementById('r-' + key).onchange = (e) => post('/api/rules/update', { key, value: Number(e.target.value) });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'p') post(document.getElementById('pause').textContent === 'pause' ? '/api/engine/pause' : '/api/engine/resume');
+      if (e.key === 'f') document.getElementById('fire-filter').click();
+      if (e.key === '/') { e.preventDefault(); document.getElementById('search').focus(); }
+      if (e.key === 'Escape') drawer.classList.remove('open');
+    });
+    function post(path, body) {
+      return fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body||{}) });
+    }
+    function short(a) { return a ? a.slice(0,6)+'…'+a.slice(-4) : ''; }
+    function escape(s) { return String(s||'').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  </script>
+</body>
+</html>
