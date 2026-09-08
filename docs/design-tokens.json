@@ -1,0 +1,42 @@
+{
+  "$schema": "https://design-tokens.org/draft/schema.json",
+  "name": "dzo",
+  "version": "0.1.0",
+  "color": {
+    "bg":         { "value": "#0A0A0A", "type": "color", "desc": "terminal-black background" },
+    "surface":    { "value": "#141210", "type": "color", "desc": "cards, drawers" },
+    "border":     { "value": "#2A2724", "type": "color", "desc": "dividers, table lines" },
+    "accent":     { "value": "#00FF88", "type": "color", "desc": "wordmark, FIRE, links, live signals" },
+    "warn":       { "value": "#FFB347", "type": "color", "desc": "WATCH verdicts, warnings" },
+    "mute":       { "value": "#4A4A4A", "type": "color", "desc": "SKIP, muted state" },
+    "text":       { "value": "#F5F1E8", "type": "color", "desc": "primary text" },
+    "textMuted":  { "value": "#8B8680", "type": "color", "desc": "secondary text, metadata" },
+    "red":        { "value": "#FF5555", "type": "color", "desc": "errors, session-budget-reached, stop-loss" }
+  },
+  "font": {
+    "wordmark":   { "value": "Berkeley Mono, JetBrains Mono, monospace", "weight": 700, "size": "24px" },
+    "mono":       { "value": "Berkeley Mono, JetBrains Mono, monospace", "weight": 400 },
+    "monoReadout":{ "value": "JetBrains Mono, monospace", "weight": 500, "size": "13px" },
+    "heading":    { "value": "Inter, system-ui, sans-serif", "weight": 600 },
+    "body":       { "value": "Inter, system-ui, sans-serif", "weight": 400, "size": "14px" }
+  },
+  "space": {
+    "unit":       { "value": "4px", "desc": "vertical rhythm base" },
+    "cardPad":    { "value": "12px" },
+    "drawerPad":  { "value": "16px" },
+    "gap":        { "value": "12px" }
+  },
+  "radius": {
+    "sm":         { "value": "4px" },
+    "md":         { "value": "8px" },
+    "lg":         { "value": "12px" }
+  },
+  "motion": {
+    "cardEnter":  { "value": "fade 200ms ease-out", "desc": "new card appearing" },
+    "reduced":    { "value": "respect prefers-reduced-motion" }
+  },
+  "board": {
+    "port":       { "value": 4663 },
+    "host":       { "value": "127.0.0.1" }
+  }
+}
