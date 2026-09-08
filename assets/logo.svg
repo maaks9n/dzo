@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#0A0A0A"/>
+  <g fill="none" stroke="#00FF88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- D -->
+    <path d="M 90 160 L 90 352 L 160 352 Q 210 352 210 256 Q 210 160 160 160 Z"/>
+    <!-- Z -->
+    <path d="M 232 160 L 320 160 L 232 352 L 320 352"/>
+    <!-- O with crosshair -->
+    <circle cx="386" cy="256" r="72"/>
+    <line x1="386" y1="230" x2="386" y2="282"/>
+    <line x1="360" y1="256" x2="412" y2="256"/>
+  </g>
+  <text x="256" y="450" text-anchor="middle" fill="#F5F1E8" font-family="'Berkeley Mono','JetBrains Mono',monospace" font-size="28" font-weight="700" letter-spacing="4">DZO</text>
+  <text x="256" y="482" text-anchor="middle" fill="#8B8680" font-family="'Berkeley Mono','JetBrains Mono',monospace" font-size="16">wait for zero</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" width="1500" height="500">
+  <rect width="1500" height="500" fill="#0A0A0A"/>
+
+  <!-- Scanline texture -->
+  <defs>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#141210"/>
+    </pattern>
+  </defs>
+  <rect width="1500" height="500" fill="url(#scan)" opacity="0.15"/>
+
+  <!-- Wordmark -->
+  <text x="120" y="270" fill="#00FF88" font-family="'Berkeley Mono','JetBrains Mono',monospace" font-size="220" font-weight="700" letter-spacing="12">DZO</text>
+  <text x="130" y="340" fill="#F5F1E8" font-family="'Berkeley Mono','JetBrains Mono',monospace" font-size="42">wait for zero</text>
+  <text x="130" y="390" fill="#8B8680" font-family="'Berkeley Mono','JetBrains Mono',monospace" font-size="20">Decay · Zero · Open</text>
+
+  <!-- Decay curve on the right -->
+  <g transform="translate(920, 100)">
+    <!-- axes -->
+    <line x1="0" y1="300" x2="500" y2="300" stroke="#2A2724" stroke-width="1"/>
+    <line x1="0" y1="0" x2="0" y2="300" stroke="#2A2724" stroke-width="1"/>
+    <!-- ceiling -->
+    <line x1="0" y1="270" x2="500" y2="270" stroke="#8B8680" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="510" y="275" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">ceiling</text>
+    <!-- decay curve: 9900 bps to 0 over 3s, exponential -->
+    <path d="M 0 0 Q 100 100 175 200 T 500 300" stroke="#00FF88" stroke-width="3" fill="none"/>
+    <!-- entry dot -->
+    <circle cx="175" cy="275" r="5" fill="#00FF88"/>
+    <text x="185" y="270" fill="#00FF88" font-family="'JetBrains Mono',monospace" font-size="14">entry</text>
+    <!-- x-axis labels -->
+    <text x="0" y="325" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">0s</text>
+    <text x="245" y="325" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">1.5s</text>
+    <text x="480" y="325" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">3s</text>
+    <!-- y-axis labels -->
+    <text x="-45" y="10" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">9900</text>
+    <text x="-20" y="305" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="14">0</text>
+  </g>
+
+  <!-- bottom right handle -->
+  <text x="1380" y="480" text-anchor="end" fill="#8B8680" font-family="'JetBrains Mono',monospace" font-size="16">github.com/Dezo/dzo</text>
+</svg>
