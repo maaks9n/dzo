@@ -254,4 +254,4 @@ MIT. Keep the dry run on until `replay` shows green for a session.
 
 ---
 
-*wait for zero* — [@Dezo](https://x.com/Dezo)
+*wait for zero* — [@Dezo](https://x.com/0xDezo)
