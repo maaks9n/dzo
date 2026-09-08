@@ -1,0 +1,53 @@
+# DZO — scoring weights.
+# Every number here is loaded at start and can be edited without rebuilding.
+# `dzo tune` produces recommended values for any of these.
+# `dzo replay --rules this-file.yaml` tests a change before you go live.
+
+weights:
+  devBuyInBand:       15    # dev buy within [devBuyMin, devBuyMax]
+  devBuyHeavy:       -25    # dev buy >= devBuyHeavyMin
+  devBuyNone:        -10
+  creatorTaxLow:      10    # <= creatorTaxLowMax
+  creatorTaxHigh:    -25    # >= creatorTaxHighMin
+  feesThirdParty:      5    # fee recipient != deployer (builder/KOL deal)
+  hasX:                8
+  hasWebsite:          8
+  hasTelegram:         3
+  noSocials:         -15
+  exemptFew:          -5    # 1..exemptFewMax exempt wallets
+  exemptMany:        -20    # >= exemptManyMin
+  deployerFresh:       5
+  deployerGraduator:  15    # graduationRate >= deployerGraduationMin
+  deployerSerialDump: -25   # launches >= deployerSerialMin && graduated == 0
+  clusterMid:         -8    # cluster in [clusterMidMin, clusterHighMin)
+  clusterHigh:       -25    # cluster >= clusterHighMin
+  organicBuyers:      10    # follow-up: >= organicBuyersMin distinct buyers
+  botOnlyBuyers:     -10    # follow-up: every early buy paid opening tax
+
+bands:
+  devBuyMin:           0.01
+  devBuyMax:           0.06
+  devBuyHeavyMin:      0.10
+  creatorTaxLowMax:    0.02
+  creatorTaxHighMin:   0.05
+  exemptFewMax:        3
+  exemptManyMin:       4
+  deployerGraduationMin: 0.30
+  deployerSerialMin:   5
+  clusterMidMin:       0.4
+  clusterHighMin:      0.7
+  organicBuyersMin:    10
+
+# Hard rules — a launch that violates any of these is refused (verdict SKIP with the rule name).
+rules:
+  minScore:            60
+  maxDevShare:         0.08
+  maxCreatorTax:       0.03
+  maxExemptWallets:    2
+  maxClusterScore:     0.7
+  requireSocials:      true
+  allowNonEthPairs:    false
+
+verdicts:
+  fire:                75
+  watch:               45

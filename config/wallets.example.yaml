@@ -1,0 +1,17 @@
+# DZO — multi-wallet planner.
+# Copy to wallets.yaml and edit. Referenced by `dzo snipe --wallets strict,loose`.
+# Each wallet is a separate signer with independent thresholds and budgets.
+
+wallets:
+  strict:
+    keyfile: .keys/strict.key      # git-ignored path with a single line of the private key
+    minScore: 85
+    maxDevShare: 0.05
+    ethPerShot: 0.01
+    budget: 0.03                   # ETH per session
+  loose:
+    keyfile: .keys/loose.key
+    minScore: 60
+    maxDevShare: 0.08
+    ethPerShot: 0.005
+    budget: 0.02
