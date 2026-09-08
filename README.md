@@ -1,5 +1,7 @@
 # DZO
 
+![DZO — wait for zero](assets/hero.png)
+
 **Decay · Zero · Open** — the patient sniper terminal for pons v2 on Robinhood Chain.
 Local, open, non-custodial, dry run by default.
 
