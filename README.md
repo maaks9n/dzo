@@ -1,5 +1,19 @@
 # DZO
 
+   <p align="center">
+     <b>dzo</b><br>
+     <i>the patient sniper terminal for pons v2 on Robinhood Chain</i>
+   </p>
+
+   <p align="center">
+     <img alt="tests" src="https://img.shields.io/badge/tests-142%20passing-9AE66E?style=flat-square&labelColor=0C0F14">
+     <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A520-D9D9D9?style=flat-square&labelColor=0C0F14">
+     <img alt="chain" src="https://img.shields.io/badge/Robinhood%20Chain-4663-FFD93B?style=flat-square&labelColor=0C0F14">
+     <img alt="runtime deps" src="https://img.shields.io/badge/runtime%20deps-3-D9D9D9?style=flat-square&labelColor=0C0F14">
+     <img alt="dry run" src="https://img.shields.io/badge/dry%20run-default-00FF88?style=flat-square&labelColor=0C0F14">
+     <img alt="license" src="https://img.shields.io/badge/license-MIT-FFD93B?style=flat-square&labelColor=0C0F14">
+   </p>
+
 ![DZO — wait for zero](assets/hero.png)
 
 **Decay · Zero · Open** — the patient sniper terminal for pons v2 on Robinhood Chain.
