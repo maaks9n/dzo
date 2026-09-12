@@ -81,6 +81,7 @@ dzo snipe              # dry run in the terminal: pass reasons, draw, FIRE, mark
 dzo replay --last 24h  # rerun yesterday through the current rules, print P&L
 dzo snipe --live       # after you have watched it, and replay showed green
 ```
+  ![dzo hunt — the engine at work](assets/board.png)
 
 ## Commands
 
